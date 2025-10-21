@@ -1,20 +1,35 @@
 package game.models;
 
-abstract class Character {
+public abstract class Character {
     protected int HP;
     protected int MP;
     protected int ATK;
-    protected int SPEED;
+    protected int SPD;
 
-    public void makeAttack() {
-        System.out.println("default attack method");
+    Character(int HP, int MP, int ATK, int SPD) {
+        this.HP = HP;
+        this.MP = MP;
+        this.ATK = ATK;
+        this.SPD = SPD;
     }
 
-    public void makeSpecialAttack() {
-        System.out.println("default special attack method");
+    protected int getHP() {
+        return HP;
     }
 
-    public void takeDamage(int damage) {
-        System.out.println("take damage method");
+    protected int getMP() {
+        return MP;
     }
+
+    protected int getATK() {
+        return ATK;
+    }
+
+    protected int getSPD() {
+        return SPD;
+    }
+
+    public void makeAttack() {}
+
+    public void makeSpecialAttack() {}
 }
