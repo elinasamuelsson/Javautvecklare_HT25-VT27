@@ -1,10 +1,10 @@
 package examinationsprojekt.utils;
 
 public interface IReadUserInput {
-    public default String stringInput() {
+    default String stringInput() {
         return "";
     };
-    public default double doubleInput() {
+    default double doubleInput() {
         return 0;
     };
 }
