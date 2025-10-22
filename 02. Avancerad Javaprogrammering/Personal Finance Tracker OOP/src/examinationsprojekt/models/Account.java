@@ -9,11 +9,11 @@ public abstract class Account {
     protected double balance;
     protected final ArrayList<Transaction> transactions;
 
-    Account(String name, String owner, AccountTypes type, double balance) {
+    Account(String name, String owner, AccountTypes type) {
         this.name = name;
         this.owner = owner;
         this.type = type;
-        this.balance = balance;
+        this.balance = 0;
         this.transactions = new ArrayList<Transaction>();
     }
 
