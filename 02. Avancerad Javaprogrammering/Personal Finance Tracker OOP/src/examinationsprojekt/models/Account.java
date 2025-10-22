@@ -2,12 +2,12 @@ package examinationsprojekt.models;
 
 import java.util.ArrayList;
 
-public class Account {
-    private final String name;
-    private final String owner;
-    private final AccountTypes type; //Enum here for extra clarity despite extending subclasses
-    private double balance;
-    private final ArrayList<Transaction> transactions;
+public abstract class Account {
+    protected final String name;
+    protected final String owner;
+    protected final AccountTypes type; //Enum here for extra clarity despite extending subclasses
+    protected double balance;
+    protected final ArrayList<Transaction> transactions;
 
     Account(String name, String owner, AccountTypes type, double balance) {
         this.name = name;
