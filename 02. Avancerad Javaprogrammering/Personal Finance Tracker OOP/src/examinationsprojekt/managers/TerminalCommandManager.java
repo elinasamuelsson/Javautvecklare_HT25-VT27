@@ -10,19 +10,24 @@ public class TerminalCommandManager implements ICommandManager {
         printMenuOptions();
 
         ReadUserTerminalInput input = new ReadUserTerminalInput();
+        ICommand command;
         String userInput = "";
+
         while (true) {
             userInput = input.stringInput();
 
             switch (userInput) {
                 case "1":
-                    new AddAccountCommand().run();
+                    command = new AddAccountCommand();
+                    command.run();
                     break;
                 case "2":
-                    new SelectAccountCommand().run();
+                    command = new SelectAccountCommand();
+                    command.run();
                     break;
                 case "3":
-                    new DeleteAccountCommand().run();
+                    command = new DeleteAccountCommand();
+                    command.run();
                     break;
                 case "0":
                     System.exit(0);
@@ -44,4 +49,6 @@ public class TerminalCommandManager implements ICommandManager {
         System.out.println("-------------------------------------------");
         System.out.println();
     }
+
+    private void getCommand() {} //add logic to select command here instead of in run()-method to avoid repetition
 }
