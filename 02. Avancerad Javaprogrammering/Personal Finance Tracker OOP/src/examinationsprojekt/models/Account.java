@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Account {
     private final String name;
     private final String owner;
-    private final AccountTypes type;
+    private final AccountTypes type; //Enum here for extra clarity despite extending subclasses
     private double balance;
     private final ArrayList<Transaction> transactions;
 

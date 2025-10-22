@@ -6,7 +6,7 @@ public class Transaction {
     private final String id;
     private final double amount;
     private final LocalDateTime time;
-    private final TransactionTypes type;
+    private final TransactionTypes type; //only transaction types as super and subclasses here doesn't make sense to me
     private final String description;
 
     public Transaction(double amount, LocalDateTime time, TransactionTypes type, String description) {

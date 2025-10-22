@@ -4,6 +4,7 @@ public enum TransactionTypes {
     //earning
     SALARY("Salary"),
     GIFT("Gift"),
+    INTEREST("Interest"),
     OTHER_EARNING("Miscellaneous income"),
 
     //spending
