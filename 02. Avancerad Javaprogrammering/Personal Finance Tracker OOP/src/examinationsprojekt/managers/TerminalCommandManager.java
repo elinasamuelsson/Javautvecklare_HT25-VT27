@@ -11,81 +11,36 @@ public class TerminalCommandManager implements ICommandManager {
     public void run() {
         System.out.println("Welcome to the revised OOP version of the Personal Finance Tracker!");
 
-        ICommand command;
-        String userInput = "";
-
         while (true) {
             printMainMenuOptions();
-            userInput = input.stringInput();
+            String userInput = input.stringInput();
+            ICommand command = getMainMenuCommand(userInput);
 
-            switch (userInput) {
-                case "1":
-                    command = new AddAccountCommand();
-                    command.run();
-                    break;
-                case "2":
-                    command = new SelectAccountCommand();
-                    command.run();
-                    break;
-                case "3":
-                    command = new DeleteAccountCommand();
-                    command.run();
-                    break;
-                case "4":
-                    command = new AddTransactionCommand();
-                    command.run();
-                    break;
-                case "5":
-                    viewTransactionsSubMenu();
-                    break;
-                case "6":
-                    command = new DeleteTransactionCommand();
-                    command.run();
-                    break;
-                case "7":
-                    command = new ViewAccountBalanceCommand();
-                    command.run();
-                    break;
-                case "0":
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Option does not exist. Please enter a valid option.");
+            if (command != null) {
+                command.run();
+            } else if (userInput.equals("5")) {
+                viewTransactionsSubMenu();
+            } else if (userInput.equals("0")) {
+                System.out.println("Exiting program.");
+                System.exit(0);
+            } else {
+                System.out.println("Invalid command. Try again.");
             }
         }
     }
 
     private void viewTransactionsSubMenu() {
-        ICommand command;
-        String userInput = "";
-
         while (true) {
             printViewTransactionsMenuOptions();
-            userInput = input.stringInput();
+            String userInput = input.stringInput();
+            ICommand command = getViewTransactionsMenuCommand(userInput);
 
-            switch (userInput) {
-                case "1":
-                    command = new ViewTransactionsCommand(ViewOptions.YEARLY);
-                    command.run();
-                    break;
-                case "2":
-                    command = new ViewTransactionsCommand(ViewOptions.MONTHLY);
-                    command.run();
-                    break;
-                case "3":
-                    command = new ViewTransactionsCommand(ViewOptions.WEEKLY);
-                    command.run();
-                    break;
-                case "4":
-                    command = new ViewTransactionsCommand(ViewOptions.DAILY);
-                    command.run();
-                    break;
-                case "5":
-                    command = new ViewTransactionsCommand(ViewOptions.CATEGORY);
-                    command.run();
-                    break;
-                default:
-                    break;
+            if (command != null) {
+                command.run();
+            } else if (userInput.equals("0")) {
+                return;
+            } else {
+                System.out.println("Invalid command. Try again.");
             }
         }
     }
@@ -119,5 +74,28 @@ public class TerminalCommandManager implements ICommandManager {
         System.out.println();
     }
 
-    private void getCommand() {} //add logic to select command here instead of in run()-method to avoid repetition
+    private ICommand getMainMenuCommand(String userInput) {
+        printMainMenuOptions();
+
+        return switch (userInput) {
+            case "1" -> new AddAccountCommand();
+            case "2" -> new SelectAccountCommand();
+            case "3" -> new DeleteAccountCommand();
+            case "4" -> new AddTransactionCommand();
+            case "6" -> new DeleteTransactionCommand();
+            case "7" -> new ViewAccountBalanceCommand();
+            default -> null;
+        };
+    }
+
+    private ICommand getViewTransactionsMenuCommand(String userInput) {
+        return switch (userInput) {
+            case "1" -> new ViewTransactionsCommand(ViewOptions.YEARLY);
+            case "2" -> new ViewTransactionsCommand(ViewOptions.MONTHLY);
+            case "3" -> new ViewTransactionsCommand(ViewOptions.WEEKLY);
+            case "4" -> new ViewTransactionsCommand(ViewOptions.DAILY);
+            case "5" -> new ViewTransactionsCommand(ViewOptions.CATEGORY);
+            default -> null;
+        };
+    }
 }
