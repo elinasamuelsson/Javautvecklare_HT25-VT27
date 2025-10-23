@@ -1,19 +1,19 @@
 package examinationsprojekt.managers;
 
 import examinationsprojekt.commands.*;
+import examinationsprojekt.utils.IReadUserInput;
 import examinationsprojekt.utils.ReadUserTerminalInput;
 
 public class TerminalCommandManager implements ICommandManager {
     public void run() {
         System.out.println("Welcome to the revised OOP version of the Personal Finance Tracker!");
 
-        printMenuOptions();
-
-        ReadUserTerminalInput input = new ReadUserTerminalInput();
+        IReadUserInput input = new ReadUserTerminalInput();
         ICommand command;
         String userInput = "";
 
         while (true) {
+            printMenuOptions();
             userInput = input.stringInput();
 
             switch (userInput) {
