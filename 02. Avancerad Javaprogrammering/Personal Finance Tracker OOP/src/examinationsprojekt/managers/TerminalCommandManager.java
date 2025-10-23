@@ -29,6 +29,18 @@ public class TerminalCommandManager implements ICommandManager {
                     command = new DeleteAccountCommand();
                     command.run();
                     break;
+                case "4":
+                    command = new AddTransactionCommand();
+                    command.run();
+                    break;
+                case "5":
+                    command = new ViewTransactionsCommand();
+                    command.run();
+                    break;
+                case "6":
+                    command = new DeleteTransactionCommand();
+                    command.run();
+                    break;
                 case "0":
                     System.exit(0);
                     break;
@@ -45,6 +57,9 @@ public class TerminalCommandManager implements ICommandManager {
         System.out.println("\t1. Add account");
         System.out.println("\t2. Select account");
         System.out.println("\t3. Remove account");
+        System.out.println("\t4. Add transaction");
+        System.out.println("\t5. View transactions");
+        System.out.println("\t6. Delete transaction");
         System.out.println("\t0. Exit program");
         System.out.println("-------------------------------------------");
         System.out.println();
