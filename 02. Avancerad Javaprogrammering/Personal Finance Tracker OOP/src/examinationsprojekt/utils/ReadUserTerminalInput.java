@@ -22,4 +22,17 @@ public class ReadUserTerminalInput implements IReadUserInput {
             }
         }
     }
+
+    @Override
+    public int intInput() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.print(" >");
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException exception) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
+    }
 }
