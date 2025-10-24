@@ -29,7 +29,7 @@ public class TerminalCommandManager implements ICommandManager {
         }
     }
 
-    private void viewTransactionsSubMenu() {
+    private void viewTransactionsSubMenu() { //considering whether this should be its own commandmanager
         while (true) {
             printViewTransactionsMenuOptions();
             String userInput = input.stringInput();
@@ -60,20 +60,6 @@ public class TerminalCommandManager implements ICommandManager {
         System.out.println();
     }
 
-    private void printViewTransactionsMenuOptions() {
-        System.out.println();
-        System.out.println("-------------------------------------------");
-        System.out.println("Please select an option from the following:");
-        System.out.println("\t1. Yearly");
-        System.out.println("\t2. Monthly");
-        System.out.println("\t3. Weekly");
-        System.out.println("\t4. Daily");
-        System.out.println("\t5. By category");
-        System.out.println("\t0. Return to main menu");
-        System.out.println("-------------------------------------------");
-        System.out.println();
-    }
-
     private ICommand getMainMenuCommand(String userInput) {
         printMainMenuOptions();
 
@@ -86,6 +72,20 @@ public class TerminalCommandManager implements ICommandManager {
             case "7" -> new ViewAccountBalanceCommand();
             default -> null;
         };
+    }
+
+    private void printViewTransactionsMenuOptions() {
+        System.out.println();
+        System.out.println("-------------------------------------------");
+        System.out.println("Please select an option from the following:");
+        System.out.println("\t1. Yearly");
+        System.out.println("\t2. Monthly");
+        System.out.println("\t3. Weekly");
+        System.out.println("\t4. Daily");
+        System.out.println("\t5. By category");
+        System.out.println("\t0. Return to main menu");
+        System.out.println("-------------------------------------------");
+        System.out.println();
     }
 
     private ICommand getViewTransactionsMenuCommand(String userInput) {
