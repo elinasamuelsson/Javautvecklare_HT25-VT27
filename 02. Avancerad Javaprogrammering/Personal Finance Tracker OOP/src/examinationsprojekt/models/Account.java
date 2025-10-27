@@ -36,4 +36,8 @@ public abstract class Account {
     public ArrayList<Transaction> getTransactionsCopy() {
         return new ArrayList<Transaction>(transactions);
     }
+
+    public void addTransactionToList(Transaction transaction) {
+        transactions.add(transaction);
+    }
 }
