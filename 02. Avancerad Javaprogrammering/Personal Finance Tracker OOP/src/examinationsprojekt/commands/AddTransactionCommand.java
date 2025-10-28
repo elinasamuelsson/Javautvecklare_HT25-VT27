@@ -66,7 +66,7 @@ public class AddTransactionCommand implements ICommand {
                         userInput >= TransactionTypes.values().length) {
                     System.out.println("Please enter a valid option.");
                 } else {
-                    return TransactionTypes.values()[userInput];
+                    return TransactionTypes.values()[(userInput - 1)];
                 }
             } catch (InputMismatchException exception) {
                 System.out.println(exception.getMessage());
