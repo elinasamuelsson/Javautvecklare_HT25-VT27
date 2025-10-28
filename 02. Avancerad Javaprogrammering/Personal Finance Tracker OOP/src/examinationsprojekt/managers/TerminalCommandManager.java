@@ -1,7 +1,9 @@
 package examinationsprojekt.managers;
 
 import examinationsprojekt.commands.*;
+import examinationsprojekt.models.Account;
 import examinationsprojekt.models.ViewOptions;
+import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
 import examinationsprojekt.utils.ReadUserTerminalInput;
 
@@ -18,8 +20,21 @@ public class TerminalCommandManager implements ICommandManager {
 
             if (command != null) {
                 command.run();
-            } else if (userInput.equals("5")) {
-                viewTransactionsSubMenu();
+            } else if (userInput.equals("5")) { //tidy this up asap
+                ListRepository repository = new ListRepository();
+                Account accountToView = null;
+
+                for (Account account : repository.read()) {
+                    if (account.equals(CurrentStateManager.getCurrentAccount())) {
+                        accountToView = account;
+                    }
+                }
+
+                if (accountToView == null) {
+                    System.out.println("Select an account before viewing transactions.");
+                } else {
+                    viewTransactionsSubMenu();
+                }
             } else if (userInput.equals("0")) {
                 System.out.println("Exiting program.");
                 System.exit(0);
