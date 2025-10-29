@@ -26,7 +26,7 @@ public class Transaction {
     public String getDescription() { return description; }
     public boolean isEarning() { return isEarning; }
 
-    public String idGenerator() {
+    private String idGenerator() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder id = new StringBuilder();
 

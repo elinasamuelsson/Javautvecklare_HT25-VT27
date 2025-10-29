@@ -84,8 +84,6 @@ public class TerminalCommandManager implements ICommandManager {
     }
 
     private ICommand getMainMenuCommand(String userInput) {
-        printMainMenuOptions();
-
         return switch (userInput) {
             case "1" -> new AddAccountCommand();
             case "2" -> new SelectAccountCommand();
