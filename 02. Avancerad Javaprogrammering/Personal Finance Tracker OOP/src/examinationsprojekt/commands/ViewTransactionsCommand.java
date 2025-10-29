@@ -3,6 +3,7 @@ package examinationsprojekt.commands;
 import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
+import examinationsprojekt.models.TransactionTypes;
 import examinationsprojekt.models.ViewOptions;
 import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
@@ -11,6 +12,7 @@ import examinationsprojekt.utils.ReadUserTerminalInput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.InputMismatchException;
@@ -43,11 +45,11 @@ public class ViewTransactionsCommand implements ICommand {
             } else if (option.equals(ViewOptions.MONTHLY)) {
                 viewMonthly(transactions);
             } else if (option.equals(ViewOptions.WEEKLY)) {
-                System.out.println("printed weekly transactions list");
+                viewWeekly(transactions);
             } else if (option.equals(ViewOptions.DAILY)) {
-                System.out.println("printed daily transactions list");
+                viewDaily(transactions);
             } else if (option.equals(ViewOptions.CATEGORY)) {
-                System.out.println("printed transactions list by category");
+                viewCategory(transactions);
             }
         } catch (NullPointerException exception) {
             System.out.println("No account to print.");
@@ -142,6 +144,148 @@ public class ViewTransactionsCommand implements ICommand {
                     return;
                 default:
                     System.out.println("This option does not exist. Try again.");
+            }
+        }
+    }
+
+    private void viewWeekly(List<Transaction> transactions) {
+        WeekFields week = WeekFields.ISO;
+        LocalDateTime dateToPrint = LocalDateTime.now()
+                .with(week.dayOfWeek(), 1);
+
+        transactions.sort(
+                Comparator.comparingInt((Transaction transaction) -> transaction.getTime().get(week.weekBasedYear()))
+                        .thenComparing(transaction -> transaction.getTime().get(week.weekOfWeekBasedYear())));
+
+        while (true) {
+            System.out.println("----------------" + dateToPrint.get(week.weekOfWeekBasedYear()) + " " +
+                    dateToPrint.get(week.weekBasedYear()) + "----------------");
+            System.out.println();
+            for (Transaction transaction : transactions) {
+                if (transaction.getTime().get(week.weekBasedYear()) == dateToPrint.get(week.weekBasedYear())
+                        && transaction.getTime().get(week.weekOfWeekBasedYear()) == dateToPrint.get(week.weekOfWeekBasedYear())) {
+                    printTransaction(transaction);
+                }
+            }
+
+            System.out.println("What do you wish to do?");
+            System.out.println("1. View previous week");
+            System.out.println("2. View next week");
+            System.out.println("3. Manually select week");
+            System.out.println("0. Return");
+
+            String userInput = input.stringInput();
+            switch (userInput) {
+                case "1":
+                    dateToPrint = dateToPrint.minusDays(7);
+                    break;
+                case "2":
+                    dateToPrint = dateToPrint.plusDays(7);
+                    break;
+                case "3":
+                    try {
+                        int weekInput = 0;
+                        int yearInput = 0;
+
+                        System.out.println("Enter the week you wish to view: ");
+                        weekInput = input.intInput();
+
+                        System.out.println("Enter the year of the week you wish to view: ");
+                        yearInput = input.intInput();
+
+
+                        dateToPrint = LocalDateTime.of(yearInput, 1, 1, 12, 0)
+                                .with(week.weekOfWeekBasedYear(), weekInput)
+                                .with(week.dayOfWeek(), 1);
+                    } catch (InputMismatchException exception) {
+                        System.out.println("Please enter a valid week and year.");
+                    }
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("This option does not exist. Try again.");
+            }
+        }
+    }
+
+    private void viewDaily(List<Transaction> transactions) {
+        LocalDateTime dateToPrint = LocalDateTime.now();
+
+        while (true) {
+            System.out.println("----------------" + dateToPrint.getDayOfMonth() + " " +
+                    dateToPrint.getMonth() + " " + dateToPrint.getYear() + "----------------");
+            System.out.println();
+            for (Transaction transaction : transactions) {
+                if (transaction.getTime().getDayOfYear() == dateToPrint.getDayOfYear()
+                        && transaction.getTime().getYear() == dateToPrint.getYear()) {
+                    printTransaction(transaction);
+                }
+            }
+
+            System.out.println("What do you wish to do?");
+            System.out.println("1. View previous day");
+            System.out.println("2. View next day");
+            System.out.println("3. Manually select day");
+            System.out.println("0. Return");
+
+            String userInput = input.stringInput();
+            switch (userInput) {
+                case "1":
+                    dateToPrint = dateToPrint.minusDays(1);
+                    break;
+                case "2":
+                    dateToPrint = dateToPrint.plusDays(1);
+                    break;
+                case "3":
+                    try {
+                        System.out.println("Enter date of the day you wish to view: ");
+                        System.out.println("Please use the format YYYY-MM-DD");
+                        String dateInput = input.stringInput();
+
+
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                        dateToPrint = LocalDateTime.parse((dateInput + " 12:00"), formatter);
+                        break;
+                    } catch (DateTimeParseException exception) {
+                        System.out.println("Invalid date format. Try again.");
+                        System.out.println("Please use the format YYYY-MM-DD");
+                    }
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("This option does not exist. Try again.");
+            }
+        }
+    }
+
+    private void viewCategory(List<Transaction> transactions) {
+        while (true) {
+            try {
+                System.out.println("Which category do you wish to view?");
+                for (TransactionTypes type : TransactionTypes.values()) {
+                    System.out.println(type.name());
+                }
+                System.out.println("To return type 'return'.");
+
+                String categoryToPrint = input.stringInput().toUpperCase();
+
+                if (categoryToPrint.equals("RETURN")) {
+                    return;
+                }
+
+                TransactionTypes chosenCategory = TransactionTypes.valueOf(categoryToPrint);
+
+                System.out.println("----------------" + chosenCategory.getTypeDescription() + "----------------");
+                System.out.println();
+                for (Transaction transaction : transactions) {
+                    if (transaction.getType() == chosenCategory) {
+                        printTransaction(transaction);
+                    }
+                }
+            } catch (IllegalArgumentException exception) {
+                System.out.println("Invalid category. Try again.");
             }
         }
     }
