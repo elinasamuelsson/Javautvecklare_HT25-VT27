@@ -40,4 +40,8 @@ public abstract class Account {
     public void addTransactionToList(Transaction transaction) {
         transactions.add(transaction);
     }
+
+    public void removeTransactionFromList(Transaction transaction) {
+        transactions.remove(transaction);
+    }
 }
