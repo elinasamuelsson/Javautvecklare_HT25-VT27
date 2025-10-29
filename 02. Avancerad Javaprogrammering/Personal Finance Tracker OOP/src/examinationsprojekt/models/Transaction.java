@@ -6,10 +6,12 @@ public class Transaction {
     private final String id;
     private final double amount;
     private final LocalDateTime time;
-    private final TransactionTypes type; //only transaction types as super and subclasses here doesn't make sense to me
+    private final TransactionTypes type;
     private final String description;
+    private final boolean isEarning;
 
-    public Transaction(double amount, LocalDateTime time, TransactionTypes type, String description) {
+    public Transaction(double amount, LocalDateTime time, TransactionTypes type, String description, boolean isEarning) {
+        this.isEarning = isEarning;
         this.id = idGenerator();
         this.amount = amount;
         this.time = time;
@@ -22,6 +24,7 @@ public class Transaction {
     public LocalDateTime getTime() { return time; }
     public TransactionTypes getType() { return type; }
     public String getDescription() { return description; }
+    public boolean isEarning() { return isEarning; }
 
     public String idGenerator() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

@@ -15,12 +15,13 @@ public class TerminalCommandManager implements ICommandManager {
 
         while (true) {
             printMainMenuOptions();
+
             String userInput = input.stringInput();
             ICommand command = getMainMenuCommand(userInput);
 
             if (command != null) {
                 command.run();
-            } else if (userInput.equals("5")) { //tidy this up asap
+            } else if (userInput.equals("5")) { //move validation into viewTransactionsCommand
                 ListRepository repository = new ListRepository();
                 Account accountToView = null;
 
@@ -44,11 +45,16 @@ public class TerminalCommandManager implements ICommandManager {
         }
     }
 
-    private void viewTransactionsSubMenu() { //considering whether this should be its own commandmanager
+    private void viewTransactionsSubMenu() {
+        ICommand command;
+        String userInput = "";
         while (true) {
+            printEarningOrSpendingMenuOptions();
+            boolean viewEarning = userWantsToViewEarning();
+
             printViewTransactionsMenuOptions();
-            String userInput = input.stringInput();
-            ICommand command = getViewTransactionsMenuCommand(userInput);
+            userInput = input.stringInput();
+            command = getViewTransactionsMenuCommand(userInput, viewEarning);
 
             if (command != null) {
                 command.run();
@@ -66,10 +72,12 @@ public class TerminalCommandManager implements ICommandManager {
         System.out.println("Please select an option from the following:");
         System.out.println("\t1. Add account");
         System.out.println("\t2. Select account");
-        System.out.println("\t3. Remove account");
+        System.out.println("\t3. Delete account");
         System.out.println("\t4. Add transaction");
         System.out.println("\t5. View transactions");
         System.out.println("\t6. Delete transaction");
+        System.out.println("\t7. Search transactions");
+        System.out.println("\t8. View account balance");
         System.out.println("\t0. Exit program");
         System.out.println("-------------------------------------------");
         System.out.println();
@@ -84,9 +92,39 @@ public class TerminalCommandManager implements ICommandManager {
             case "3" -> new DeleteAccountCommand();
             case "4" -> new AddTransactionCommand();
             case "6" -> new DeleteTransactionCommand();
-            case "7" -> new ViewAccountBalanceCommand();
+            case "7" -> new SearchTransactionCommand();
+            case "8" -> new ViewAccountBalanceCommand();
             default -> null;
         };
+    }
+
+    private void printEarningOrSpendingMenuOptions() {
+        System.out.println();
+        System.out.println("-------------------------------------------");
+        System.out.println("Please select an option from the following:");
+        System.out.println("\t1. View earnings");
+        System.out.println("\t2. View spending");
+        System.out.println("\t0. Return to main menu");
+        System.out.println("-------------------------------------------");
+        System.out.println();
+    }
+
+    private boolean userWantsToViewEarning() {
+        String userInput = "";
+
+        while (true) {
+            printEarningOrSpendingMenuOptions();
+
+            userInput = input.stringInput();
+
+            if (userInput.equals("1")) {
+                return true;
+            } else if (userInput.equals("2")) {
+                return false;
+            } else if (userInput.equals("0")) {
+                run();
+            }
+        }
     }
 
     private void printViewTransactionsMenuOptions() {
@@ -98,18 +136,18 @@ public class TerminalCommandManager implements ICommandManager {
         System.out.println("\t3. Weekly");
         System.out.println("\t4. Daily");
         System.out.println("\t5. By category");
-        System.out.println("\t0. Return to main menu");
+        System.out.println("\t0. Return to earnings or spending");
         System.out.println("-------------------------------------------");
         System.out.println();
     }
 
-    private ICommand getViewTransactionsMenuCommand(String userInput) {
+    private ICommand getViewTransactionsMenuCommand(String userInput, boolean viewEarning) {
         return switch (userInput) {
-            case "1" -> new ViewTransactionsCommand(ViewOptions.YEARLY);
-            case "2" -> new ViewTransactionsCommand(ViewOptions.MONTHLY);
-            case "3" -> new ViewTransactionsCommand(ViewOptions.WEEKLY);
-            case "4" -> new ViewTransactionsCommand(ViewOptions.DAILY);
-            case "5" -> new ViewTransactionsCommand(ViewOptions.CATEGORY);
+            case "1" -> new ViewTransactionsCommand(ViewOptions.YEARLY, viewEarning);
+            case "2" -> new ViewTransactionsCommand(ViewOptions.MONTHLY, viewEarning);
+            case "3" -> new ViewTransactionsCommand(ViewOptions.WEEKLY, viewEarning);
+            case "4" -> new ViewTransactionsCommand(ViewOptions.DAILY, viewEarning);
+            case "5" -> new ViewTransactionsCommand(ViewOptions.CATEGORY, viewEarning);
             default -> null;
         };
     }

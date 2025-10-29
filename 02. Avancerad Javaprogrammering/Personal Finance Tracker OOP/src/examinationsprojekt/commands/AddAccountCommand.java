@@ -46,10 +46,8 @@ public class AddAccountCommand implements ICommand {
         System.out.println("\t2. Savings account");
 
         String userInput = "";
-
         while (true) {
             userInput = input.stringInput();
-
             switch (userInput) {
                 case "1":
                     return AccountTypes.CHECKING;
@@ -66,7 +64,6 @@ public class AddAccountCommand implements ICommand {
         System.out.println("Enter the owner of this account.");
 
         String userInput = "";
-
         while (true) { //loop appears in multiple functions, break out and put in own helper function
             userInput = input.stringInput();
 
@@ -81,7 +78,6 @@ public class AddAccountCommand implements ICommand {
         System.out.println("Enter the name you wish to give this account.");
 
         String userInput = "";
-
         while (true) {
             userInput = input.stringInput();
 

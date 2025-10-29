@@ -20,10 +20,13 @@ import java.util.List;
 
 public class ViewTransactionsCommand implements ICommand {
     private final ViewOptions option;
+    private final boolean viewEarning;
+
     IReadUserInput input = new ReadUserTerminalInput();
 
-    public ViewTransactionsCommand(ViewOptions option) {
+    public ViewTransactionsCommand(ViewOptions option, boolean viewEarning) {
         this.option = option;
+        this.viewEarning = viewEarning;
     }
 
     public void run() {
@@ -33,26 +36,21 @@ public class ViewTransactionsCommand implements ICommand {
         for (Account account : repository.read()) {
             if (account.equals(CurrentStateManager.getCurrentAccount())) {
                 accountToView = account;
-                System.out.println("Account " + account.getName() + " has been prepped for view.");
             }
         }
 
-        try {
-            List<Transaction> transactions = sortAllTransactions(accountToView);
+        List<Transaction> transactions = sortAllTransactions(accountToView); //cannot be null, validation happens outside ViewTransactionCommand for now
 
-            if (option.equals(ViewOptions.YEARLY)) {
-                viewYearly(transactions);
-            } else if (option.equals(ViewOptions.MONTHLY)) {
-                viewMonthly(transactions);
-            } else if (option.equals(ViewOptions.WEEKLY)) {
-                viewWeekly(transactions);
-            } else if (option.equals(ViewOptions.DAILY)) {
-                viewDaily(transactions);
-            } else if (option.equals(ViewOptions.CATEGORY)) {
-                viewCategory(transactions);
-            }
-        } catch (NullPointerException exception) {
-            System.out.println("No account to print.");
+        if (option.equals(ViewOptions.YEARLY)) {
+            viewYearly(transactions);
+        } else if (option.equals(ViewOptions.MONTHLY)) {
+            viewMonthly(transactions);
+        } else if (option.equals(ViewOptions.WEEKLY)) {
+            viewWeekly(transactions);
+        } else if (option.equals(ViewOptions.DAILY)) {
+            viewDaily(transactions);
+        } else if (option.equals(ViewOptions.CATEGORY)) {
+            viewCategory(transactions);
         }
     }
 
@@ -100,6 +98,7 @@ public class ViewTransactionsCommand implements ICommand {
 
     private void viewMonthly(List<Transaction> transactions) {
         LocalDateTime dateToPrint = LocalDateTime.now();
+        String userInput = "";
 
         while (true) {
             System.out.println("----------------" + dateToPrint.getMonth().toString() + " " +
@@ -118,7 +117,7 @@ public class ViewTransactionsCommand implements ICommand {
             System.out.println("3. Manually select month");
             System.out.println("0. Return");
 
-            String userInput = input.stringInput();
+            userInput = input.stringInput();
             switch (userInput) {
                 case "1":
                     dateToPrint = dateToPrint.minusMonths(1);
@@ -157,6 +156,7 @@ public class ViewTransactionsCommand implements ICommand {
                 Comparator.comparingInt((Transaction transaction) -> transaction.getTime().get(week.weekBasedYear()))
                         .thenComparing(transaction -> transaction.getTime().get(week.weekOfWeekBasedYear())));
 
+        String userInput = "";
         while (true) {
             System.out.println("----------------" + dateToPrint.get(week.weekOfWeekBasedYear()) + " " +
                     dateToPrint.get(week.weekBasedYear()) + "----------------");
@@ -174,7 +174,7 @@ public class ViewTransactionsCommand implements ICommand {
             System.out.println("3. Manually select week");
             System.out.println("0. Return");
 
-            String userInput = input.stringInput();
+            userInput = input.stringInput();
             switch (userInput) {
                 case "1":
                     dateToPrint = dateToPrint.minusDays(7);
@@ -212,6 +212,7 @@ public class ViewTransactionsCommand implements ICommand {
     private void viewDaily(List<Transaction> transactions) {
         LocalDateTime dateToPrint = LocalDateTime.now();
 
+        String userInput = "";
         while (true) {
             System.out.println("----------------" + dateToPrint.getDayOfMonth() + " " +
                     dateToPrint.getMonth() + " " + dateToPrint.getYear() + "----------------");
@@ -229,7 +230,7 @@ public class ViewTransactionsCommand implements ICommand {
             System.out.println("3. Manually select day");
             System.out.println("0. Return");
 
-            String userInput = input.stringInput();
+            userInput = input.stringInput();
             switch (userInput) {
                 case "1":
                     dateToPrint = dateToPrint.minusDays(1);
@@ -261,6 +262,7 @@ public class ViewTransactionsCommand implements ICommand {
     }
 
     private void viewCategory(List<Transaction> transactions) {
+        String categoryToPrint = "";
         while (true) {
             try {
                 System.out.println("Which category do you wish to view?");
@@ -269,7 +271,7 @@ public class ViewTransactionsCommand implements ICommand {
                 }
                 System.out.println("To return type 'return'.");
 
-                String categoryToPrint = input.stringInput().toUpperCase();
+                categoryToPrint = input.stringInput().toUpperCase();
 
                 if (categoryToPrint.equals("RETURN")) {
                     return;
@@ -291,14 +293,22 @@ public class ViewTransactionsCommand implements ICommand {
     }
 
     private List<Transaction> sortAllTransactions(Account account) {
-        List<Transaction> transactionsToSort = new ArrayList<Transaction>(account.getTransactionsCopy());
+        List<Transaction> sortedTransactions = new ArrayList<Transaction>();
 
-        transactionsToSort.sort(
+        for (Transaction transaction : account.getTransactionsCopy()) {
+            if (viewEarning && transaction.isEarning()) {
+                sortedTransactions.add(transaction);
+            } else if (!viewEarning && !transaction.isEarning()) {
+                sortedTransactions.add(transaction);
+            }
+        }
+
+        sortedTransactions.sort(
                 Comparator.comparingInt((Transaction transaction) -> transaction.getTime().getYear()).reversed()
                         .thenComparing(transaction -> transaction.getTime().getMonthValue())
                         .thenComparing(transaction -> transaction.getTime().getDayOfYear()));
 
-        return transactionsToSort;
+        return sortedTransactions;
     }
 
     private void printTransaction(Transaction transaction) {

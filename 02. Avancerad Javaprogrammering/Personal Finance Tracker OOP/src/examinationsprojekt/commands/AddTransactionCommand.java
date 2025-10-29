@@ -25,20 +25,18 @@ public class AddTransactionCommand implements ICommand {
         Account account = CurrentStateManager.getCurrentAccount();
         IRepository repository = new ListRepository();
 
+        boolean isEarning = returnIsEarning();
         TransactionTypes type = returnType();
         LocalDateTime time = returnTime();
         String description = returnDescription();
         double amount = 0;
-        if (type == TransactionTypes.SALARY || //find a way to not hardcode this
-                type == TransactionTypes.GIFT ||
-                type == TransactionTypes.INTEREST ||
-                type == TransactionTypes.OTHER_EARNING) {
+        if (isEarning) {
             amount = returnAmountEarned();
         } else {
             amount = returnAmountSpent();
         }
 
-        Transaction transaction = new Transaction(amount, time, type, description);
+        Transaction transaction = new Transaction(amount, time, type, description, isEarning);
 
         account.addTransactionToList(transaction);
 
@@ -58,7 +56,6 @@ public class AddTransactionCommand implements ICommand {
         }
 
         int userInput = 0;
-
         while (true) {
             userInput = input.intInput();
             try {
@@ -107,6 +104,25 @@ public class AddTransactionCommand implements ICommand {
                 System.out.println("Transaction must have a description.");
             } else {
                 return userInput;
+            }
+        }
+    }
+
+    private boolean returnIsEarning() {
+        System.out.println("Did you earn or spend money?");
+        System.out.println("1. Earn");
+        System.out.println("2. Spend");
+
+        String userInput = "";
+        while (true) {
+            userInput = input.stringInput();
+
+            if (userInput.equals("1")) {
+                return true;
+            } else if (userInput.equals("2")) {
+                return false;
+            } else {
+                System.out.println("Enter a valid number response.");
             }
         }
     }

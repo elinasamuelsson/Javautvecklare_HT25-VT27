@@ -1,6 +1,5 @@
 package examinationsprojekt.commands;
 
-import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
