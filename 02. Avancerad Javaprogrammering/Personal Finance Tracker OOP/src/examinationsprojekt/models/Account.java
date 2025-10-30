@@ -1,11 +1,12 @@
 package examinationsprojekt.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Account {
+public abstract class Account implements Serializable {
     protected final String name;
     protected final String owner;
-    protected final AccountTypes type; //Enum here for extra clarity despite extending subclasses
+    protected final AccountTypes type;
     protected double balance;
     protected final ArrayList<Transaction> transactions;
 
@@ -31,6 +32,10 @@ public abstract class Account {
 
     public double getBalance() {
         return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance += balance;
     }
 
     public ArrayList<Transaction> getTransactionsCopy() {
