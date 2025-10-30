@@ -38,6 +38,7 @@ public class DeleteTransactionCommand implements ICommand {
             }
 
             repository.update(accountToDeleteFrom);
+            System.out.println("Transaction has been deleted.");
             break;
         }
     }
