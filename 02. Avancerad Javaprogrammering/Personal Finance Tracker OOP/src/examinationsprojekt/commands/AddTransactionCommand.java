@@ -39,6 +39,7 @@ public class AddTransactionCommand implements ICommand {
         Transaction transaction = new Transaction(amount, time, type, description, isEarning);
 
         account.addTransactionToList(transaction);
+        account.setBalance(amount);
 
         if (!repository.update(account)) {
             repository.create(account);
@@ -129,22 +130,36 @@ public class AddTransactionCommand implements ICommand {
 
     private double returnAmountEarned() {
         System.out.println("Enter transaction amount.");
+        double userInput = 0;
         while (true) {
             try {
-                return input.doubleInput();
-            } catch (InputMismatchException exception) {
-                System.out.println("Please enter a valid number.");
+                userInput = input.doubleInput();
+
+                if (userInput > 0) {
+                    return userInput;
+                } else {
+                    System.out.println("Amount must be greater than 0.");
+                }
+            } catch (InputMismatchException | NumberFormatException exception) {
+                System.out.println("Please enter a valid number greater than 0.");
             }
         }
     }
 
     private double returnAmountSpent() {
         System.out.println("Enter transaction amount.");
+        double userInput = 0;
         while (true) {
             try {
-                return Double.parseDouble(("-" + input.stringInput()));
-            } catch (InputMismatchException exception) {
-                System.out.println("Please enter a valid number.");
+                userInput = Double.parseDouble(("-" + input.stringInput()));
+
+                if (userInput != 0) {
+                    return userInput;
+                } else {
+                    System.out.println("Amount must be greater than 0.");
+                }
+            } catch (InputMismatchException | NumberFormatException exception) {
+                System.out.println("Please enter a valid number greater than 0.");
             }
         }
     }
