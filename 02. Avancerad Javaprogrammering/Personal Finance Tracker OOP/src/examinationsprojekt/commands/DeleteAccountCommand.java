@@ -37,9 +37,11 @@ public class DeleteAccountCommand implements ICommand {
 
         for (Account account : accounts) {
             if (userInput == (accounts.indexOf(account) + 1)) {
-                if (CurrentStateManager.getCurrentAccount().getName().equals(account.getName())) {
-                    CurrentStateManager.setCurrentAccount(null);
-                    System.out.println(account.getName() + " was unselected because of impending deletion.");
+                if (CurrentStateManager.getCurrentAccount() != null) {
+                    if (CurrentStateManager.getCurrentAccount().getName().equals(account.getName())) {
+                        CurrentStateManager.setCurrentAccount(null);
+                        System.out.println(account.getName() + " was unselected because of impending deletion.");
+                    }
                 }
 
                 repository.delete(account);

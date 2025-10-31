@@ -26,15 +26,19 @@ public class AddAccountCommand implements ICommand {
             account = new CheckingAccount(name, owner, type);
         } else if (type.equals(AccountTypes.SAVING)) {
             double interest = returnAccountInterest();
+
             account = new SavingsAccount(name, owner, type, interest);
         }
 
         List<Account> existingAccounts = repository.read();
-        for (Account existingAccount : existingAccounts) {
-            if (existingAccount.getName().equals(account.getName())) {
-                System.out.println("Account name already exists in another account.");
-                System.out.println("Restart account creation and try again.");
-                return;
+
+        if (!existingAccounts.isEmpty()) {
+            for (Account existingAccount : existingAccounts) {
+                if (existingAccount.getName().equals(account.getName())) {
+                    System.out.println("Account name already exists in another account.");
+                    System.out.println("Restart account creation and try again.");
+                    return;
+                }
             }
         }
 
@@ -54,8 +58,7 @@ public class AddAccountCommand implements ICommand {
         while (true) {
             userInput = input.intInput();
             try {
-                if (userInput == 0 ||
-                        userInput >= AccountTypes.values().length) {
+                if (userInput <= 0 || userInput > AccountTypes.values().length) {
                     System.out.println("Please enter a valid option.");
                 } else {
                     return AccountTypes.values()[(userInput - 1)];
@@ -70,7 +73,7 @@ public class AddAccountCommand implements ICommand {
         System.out.println("Enter the owner of this account.");
 
         String userInput = "";
-        while (true) { //loop appears in multiple functions, break out and put in own helper function
+        while (true) {
             userInput = input.stringInput();
 
             if (userInput.isEmpty()) {
@@ -96,11 +99,21 @@ public class AddAccountCommand implements ICommand {
 
     private double returnAccountInterest() {
         System.out.println("Enter your savings account's monthly interest.");
+        System.out.println("Please use decimal format, where for example 0.03 represents 3%.");
 
+        double MAX_INTEREST_RATE = 0.99;
+        double MIN_INTEREST_RATE = 0.001;
         double userInput = 0;
         while (true) {
             try {
                 userInput = input.doubleInput();
+                if (userInput < MIN_INTEREST_RATE) {
+                    System.out.println("Interest cannot be 0 or lower.");
+                    continue;
+                } else if (userInput > MAX_INTEREST_RATE) {
+                    System.out.println("Interest cannot be greater than 99%.");
+                    continue;
+                }
                 break;
             } catch (InputMismatchException e) {
                 System.out.println("Interest must be a valid number.");

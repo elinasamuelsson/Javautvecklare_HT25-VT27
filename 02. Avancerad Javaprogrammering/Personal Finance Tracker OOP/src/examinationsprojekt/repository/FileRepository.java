@@ -32,6 +32,11 @@ public class FileRepository implements IRepository {
         List<Account> accounts = new ArrayList<>();
         try {
             File folder = new File("saveData");
+
+            if (!folder.exists() || folder.listFiles() == null) {
+                return accounts;
+            }
+
             for (File file : folder.listFiles()) {
                 FileInputStream saveData = new FileInputStream(file);
                 ObjectInputStream objectIn = new ObjectInputStream(saveData);
@@ -58,6 +63,7 @@ public class FileRepository implements IRepository {
                 }
             }
         } catch (IOException | NullPointerException exception) {
+            System.out.println("No files found on check.");
             exception.printStackTrace();
         }
 

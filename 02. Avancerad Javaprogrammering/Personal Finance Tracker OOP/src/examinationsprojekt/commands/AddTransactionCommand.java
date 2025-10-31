@@ -32,9 +32,9 @@ public class AddTransactionCommand implements ICommand {
         String description = returnDescription();
         double amount = 0; //validate amount is realistic
         if (isEarning) {
-            amount = returnAmountEarned();
+            amount = returnAmount();
         } else {
-            amount = returnAmountSpent();
+            amount = Double.parseDouble(("-" + returnAmount()));
         }
 
         Transaction transaction = new Transaction(amount, time, type, description, isEarning);
@@ -130,20 +130,25 @@ public class AddTransactionCommand implements ICommand {
         }
     }
 
-    private double returnAmountEarned() {
+    private double returnAmount() {
         System.out.println("Enter transaction amount.");
+
+        double MAX_AMOUNT = 200000;
+
         double userInput = 0;
         while (true) {
             try {
                 userInput = input.doubleInput();
 
-                if (userInput > 0) {
-                    return userInput;
-                } else {
+                if (userInput >= MAX_AMOUNT) {
+                    System.out.println("Amount cannot be greater than 200000.");
+                } else if (userInput <= 0) {
                     System.out.println("Amount must be greater than 0.");
+                } else {
+                    return userInput;
                 }
             } catch (InputMismatchException | NumberFormatException exception) {
-                System.out.println("Please enter a valid number greater than 0.");
+                System.out.println("Please enter a valid number.");
             }
         }
     }
