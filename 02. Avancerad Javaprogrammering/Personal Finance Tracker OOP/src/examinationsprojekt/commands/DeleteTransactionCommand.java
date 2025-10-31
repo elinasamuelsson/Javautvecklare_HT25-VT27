@@ -36,6 +36,10 @@ public class DeleteTransactionCommand implements ICommand {
             for (Transaction transaction : accountToDeleteFrom.getTransactionsCopy()) {
                 if (transaction.getId().equals(userInput)) {
                     accountToDeleteFrom.removeTransactionFromList(transaction);
+                } else {
+                    System.out.println("Transaction not found.");
+                    System.out.println("Restart transaction deletion and try again.");
+                    return;
                 }
             }
 
