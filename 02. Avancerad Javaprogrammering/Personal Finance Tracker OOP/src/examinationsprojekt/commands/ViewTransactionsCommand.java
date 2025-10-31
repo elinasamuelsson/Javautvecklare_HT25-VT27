@@ -37,7 +37,7 @@ public class ViewTransactionsCommand implements ICommand {
 
         List<Account> accounts = repository.read();
         for (Account account : accounts) {
-            if (account.equals(CurrentStateManager.getCurrentAccount())) {
+            if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                 accountToView = account;
             }
         }

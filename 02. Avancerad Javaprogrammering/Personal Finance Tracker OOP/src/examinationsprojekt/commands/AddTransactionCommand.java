@@ -48,6 +48,7 @@ public class AddTransactionCommand implements ICommand {
         }
 
         repository.update(account);
+        System.out.println("Transaction has been added.");
     }
 
     private TransactionTypes returnType() {

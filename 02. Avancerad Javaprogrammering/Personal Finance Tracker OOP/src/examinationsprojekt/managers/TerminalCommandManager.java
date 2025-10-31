@@ -31,7 +31,7 @@ public class TerminalCommandManager implements ICommandManager {
 
                 List<Account> accounts = repository.read();
                 for (Account account : accounts) {
-                    if (account.equals(CurrentStateManager.getCurrentAccount())) {
+                    if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                         accountToView = account;
                     }
                 }
