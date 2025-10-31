@@ -23,7 +23,8 @@ public class SearchTransactionCommand implements ICommand {
             System.out.println("Select an account before searching transactions.");
             return;
         } else {
-            for (Account account : repository.read()) {
+            List<Account> accounts = repository.read();
+            for (Account account : accounts) {
                 if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                     accountToSearchFrom = account;
                 }

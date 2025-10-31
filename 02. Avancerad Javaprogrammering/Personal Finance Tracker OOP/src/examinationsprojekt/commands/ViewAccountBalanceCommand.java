@@ -25,6 +25,11 @@ public class ViewAccountBalanceCommand implements ICommand {
             }
         }
 
+        if (accountToPrintBalanceFrom == null) {
+            System.out.println("Select an account before viewing account balance.");
+            return;
+        }
+
         System.out.println("Your current account balance is " + accountToPrintBalanceFrom.getBalance());
     }
 }
