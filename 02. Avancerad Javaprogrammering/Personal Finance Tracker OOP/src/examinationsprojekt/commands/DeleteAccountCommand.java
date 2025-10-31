@@ -29,7 +29,7 @@ public class DeleteAccountCommand implements ICommand {
         int userInput = input.intInput();
 
         for (Account account : repository.read()) {
-            if (userInput == (repository.read().indexOf(account) + 1)) {
+            if (userInput == (accounts.indexOf(account) + 1)) {
                 repository.delete(account);
                 System.out.println(account.getName() + " deleted.");
             }
