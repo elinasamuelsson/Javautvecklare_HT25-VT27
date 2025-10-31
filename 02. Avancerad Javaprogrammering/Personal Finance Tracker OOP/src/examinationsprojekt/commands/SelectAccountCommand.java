@@ -21,6 +21,11 @@ public class SelectAccountCommand implements ICommand {
 
         List<Account> accounts = repository.read();
 
+        if (accounts.isEmpty()) {
+            System.out.println("No accounts found.");
+            return;
+        }
+
         for (Account account : accounts) {
             System.out.print((accounts.indexOf(account) + 1) + ":");
             System.out.println("\t" + account.getName() + ", " + account.getType().getTypeDescription());

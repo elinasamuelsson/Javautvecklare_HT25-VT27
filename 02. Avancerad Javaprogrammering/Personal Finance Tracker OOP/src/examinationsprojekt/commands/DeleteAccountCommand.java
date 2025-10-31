@@ -19,6 +19,12 @@ public class DeleteAccountCommand implements ICommand {
         System.out.println();
 
         List<Account> accounts = repository.read();
+
+        if (accounts.isEmpty()) {
+            System.out.println("No accounts found.");
+            return;
+        }
+
         for (Account account : accounts) {
             System.out.print((accounts.indexOf(account) + 1) + ":");
             System.out.println("\t" + account.getName() + ", " + account.getType().getTypeDescription());
@@ -31,6 +37,7 @@ public class DeleteAccountCommand implements ICommand {
         for (Account account : repository.read()) {
             if (userInput == (accounts.indexOf(account) + 1)) {
                 repository.delete(account);
+
                 System.out.println(account.getName() + " deleted.");
             }
         }
