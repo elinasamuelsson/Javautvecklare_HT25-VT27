@@ -9,7 +9,7 @@ public interface IRepository {
         return false;
     }
 
-    default List<Account> read() {
+    default List<Account> read() { //possibly change to only return one account instead of list
         return null;
     }
 

@@ -4,6 +4,7 @@ import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
 import examinationsprojekt.models.TransactionTypes;
+import examinationsprojekt.repository.FileRepository;
 import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
@@ -23,7 +24,7 @@ public class AddTransactionCommand implements ICommand {
             return;
         }
         Account account = CurrentStateManager.getCurrentAccount();
-        IRepository repository = new ListRepository();
+        IRepository repository = new FileRepository();
 
         boolean isEarning = returnIsEarning();
         TransactionTypes type = returnType();

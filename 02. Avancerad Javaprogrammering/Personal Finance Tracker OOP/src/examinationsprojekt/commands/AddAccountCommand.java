@@ -4,39 +4,47 @@ import examinationsprojekt.models.Account;
 import examinationsprojekt.models.AccountTypes;
 import examinationsprojekt.models.CheckingAccount;
 import examinationsprojekt.models.SavingsAccount;
+import examinationsprojekt.repository.FileRepository;
 import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
 import examinationsprojekt.utils.ReadUserTerminalInput;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 
 public class AddAccountCommand implements ICommand {
     private final IReadUserInput input = new ReadUserTerminalInput();
 
     public void run() {
         Account account = null;
-        IRepository repository = new ListRepository();
+        IRepository repository = new FileRepository();
 
         //all account types need the following:
         AccountTypes type = returnAccountType();
         String name = returnAccountName();
         String owner = returnAccountOwner();
 
-        if (type.equals(AccountTypes.CHECKING)) { //if checking simply create account
+        if (type.equals(AccountTypes.CHECKING)) {
             account = new CheckingAccount(name, owner, type);
-        } else if (type.equals(AccountTypes.SAVING)) { //if savings also ask for monthly interest rate
+        } else if (type.equals(AccountTypes.SAVING)) {
             double interest = returnAccountInterest();
             account = new SavingsAccount(name, owner, type, interest);
         }
 
-        if (account == null) { //if no data in account object
-            System.out.println("Account creation failed. Try again.");
-        } else {
-            repository.create(account); //add account to repository list
-            System.out.println("Account successfully created.");
-            System.out.println("Returning to menu.");
+        List<Account> existingAccounts = repository.read();
+        for (Account existingAccount : existingAccounts) {
+            if (existingAccount.getName().equals(account.getName())) {
+                System.out.println("Account name already exists in another account.");
+                System.out.println("Restart account creation and try again.");
+                return;
+            }
         }
+
+        repository.create(account);
+        System.out.println("Account successfully created.");
+        System.out.println("Returning to menu.");
     }
 
 

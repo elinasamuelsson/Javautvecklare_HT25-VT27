@@ -3,6 +3,8 @@ package examinationsprojekt.commands;
 import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
+import examinationsprojekt.repository.FileRepository;
+import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
 import examinationsprojekt.utils.ReadUserTerminalInput;
@@ -14,7 +16,7 @@ public class SearchTransactionCommand implements ICommand {
     IReadUserInput input = new ReadUserTerminalInput();
 
     public void run() {
-        ListRepository repository = new ListRepository();
+        IRepository repository = new FileRepository();
         Account accountToSearchFrom = null;
 
         if (CurrentStateManager.getCurrentAccount() == null) {

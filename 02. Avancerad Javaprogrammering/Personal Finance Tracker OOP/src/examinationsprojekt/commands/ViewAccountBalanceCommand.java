@@ -2,18 +2,23 @@ package examinationsprojekt.commands;
 
 import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
+import examinationsprojekt.repository.FileRepository;
+import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
+
+import java.util.List;
 
 public class ViewAccountBalanceCommand implements ICommand {
     public void run() {
-        ListRepository repository = new ListRepository();
+        IRepository repository = new FileRepository();
         Account accountToPrintBalanceFrom = null;
 
         if (CurrentStateManager.getCurrentAccount() == null) {
             System.out.println("Select an account before viewing account balance.");
             return;
         } else {
-            for (Account account : repository.read()) {
+            List<Account> accounts = repository.read();
+            for (Account account : accounts) {
                 if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                     accountToPrintBalanceFrom = account;
                 }

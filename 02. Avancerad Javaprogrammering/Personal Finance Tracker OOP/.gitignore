@@ -25,3 +25,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### General ###
+saveData/
+.ser

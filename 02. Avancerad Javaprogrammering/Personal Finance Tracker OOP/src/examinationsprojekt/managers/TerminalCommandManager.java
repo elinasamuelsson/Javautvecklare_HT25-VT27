@@ -3,6 +3,8 @@ package examinationsprojekt.managers;
 import examinationsprojekt.commands.*;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.ViewOptions;
+import examinationsprojekt.repository.FileRepository;
+import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
 import examinationsprojekt.utils.ReadUserTerminalInput;
@@ -22,7 +24,7 @@ public class TerminalCommandManager implements ICommandManager {
             if (command != null) {
                 command.run();
             } else if (userInput.equals("5")) { //move validation into viewTransactionsCommand
-                ListRepository repository = new ListRepository();
+                IRepository repository = new FileRepository();
                 Account accountToView = null;
 
                 for (Account account : repository.read()) {

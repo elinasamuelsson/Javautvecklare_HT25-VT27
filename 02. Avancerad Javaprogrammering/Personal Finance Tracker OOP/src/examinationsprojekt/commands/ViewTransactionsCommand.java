@@ -5,6 +5,8 @@ import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
 import examinationsprojekt.models.TransactionTypes;
 import examinationsprojekt.models.ViewOptions;
+import examinationsprojekt.repository.FileRepository;
+import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
 import examinationsprojekt.utils.ReadUserTerminalInput;
@@ -30,10 +32,11 @@ public class ViewTransactionsCommand implements ICommand {
     }
 
     public void run() {
-        ListRepository repository = new ListRepository();
+        IRepository repository = new FileRepository();
         Account accountToView = null;
 
-        for (Account account : repository.read()) {
+        List<Account> accounts = repository.read();
+        for (Account account : accounts) {
             if (account.equals(CurrentStateManager.getCurrentAccount())) {
                 accountToView = account;
             }
