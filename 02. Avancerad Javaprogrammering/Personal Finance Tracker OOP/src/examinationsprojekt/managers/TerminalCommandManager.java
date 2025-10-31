@@ -9,6 +9,8 @@ import examinationsprojekt.repository.ListRepository;
 import examinationsprojekt.utils.IReadUserInput;
 import examinationsprojekt.utils.ReadUserTerminalInput;
 
+import java.util.List;
+
 public class TerminalCommandManager implements ICommandManager {
     IReadUserInput input = new ReadUserTerminalInput();
 
@@ -27,7 +29,8 @@ public class TerminalCommandManager implements ICommandManager {
                 IRepository repository = new FileRepository();
                 Account accountToView = null;
 
-                for (Account account : repository.read()) {
+                List<Account> accounts = repository.read();
+                for (Account account : accounts) {
                     if (account.equals(CurrentStateManager.getCurrentAccount())) {
                         accountToView = account;
                     }
