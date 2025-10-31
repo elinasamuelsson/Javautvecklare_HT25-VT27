@@ -1,9 +1,6 @@
 package examinationsprojekt.commands;
 
-import examinationsprojekt.models.Account;
-import examinationsprojekt.models.AccountTypes;
-import examinationsprojekt.models.CheckingAccount;
-import examinationsprojekt.models.SavingsAccount;
+import examinationsprojekt.models.*;
 import examinationsprojekt.repository.FileRepository;
 import examinationsprojekt.repository.IRepository;
 import examinationsprojekt.repository.ListRepository;
@@ -21,7 +18,6 @@ public class AddAccountCommand implements ICommand {
         Account account = null;
         IRepository repository = new FileRepository();
 
-        //all account types need the following:
         AccountTypes type = returnAccountType();
         String name = returnAccountName();
         String owner = returnAccountOwner();
@@ -49,21 +45,23 @@ public class AddAccountCommand implements ICommand {
 
 
     private AccountTypes returnAccountType() {
-        System.out.println("What type of account do you wish to create?"); //loop through and print Account Types rather than hardcode
-        System.out.println("\t1. Checking account");
-        System.out.println("\t2. Savings account");
+        System.out.println("What type of account do you wish to create?");
+        for (int i = 0; i < AccountTypes.values().length; i++) {
+            System.out.println("\t" + (i + 1) + ". " + AccountTypes.values()[i].getTypeDescription());
+        }
 
-        String userInput = "";
+        int userInput = 0;
         while (true) {
-            userInput = input.stringInput();
-            switch (userInput) {
-                case "1":
-                    return AccountTypes.CHECKING;
-                case "2":
-                    return AccountTypes.SAVING;
-                default:
-                    System.out.println("Option does not exist. Please enter a valid option.");
-                    break;
+            userInput = input.intInput();
+            try {
+                if (userInput == 0 ||
+                        userInput >= AccountTypes.values().length) {
+                    System.out.println("Please enter a valid option.");
+                } else {
+                    return AccountTypes.values()[(userInput - 1)];
+                }
+            } catch (InputMismatchException exception) {
+                System.out.println("Option does not exist. Please enter a valid option.");
             }
         }
     }
