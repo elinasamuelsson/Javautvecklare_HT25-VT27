@@ -29,6 +29,11 @@ public class TerminalCommandManager implements ICommandManager {
                 IRepository repository = new FileRepository();
                 Account accountToView = null;
 
+                if (CurrentStateManager.getCurrentAccount() == null) {
+                    System.out.println("Select an account before viewing account balance.");
+                    continue;
+                }
+
                 List<Account> accounts = repository.read();
                 for (Account account : accounts) {
                     if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
