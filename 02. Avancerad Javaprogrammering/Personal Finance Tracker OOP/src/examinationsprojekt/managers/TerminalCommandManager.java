@@ -59,7 +59,6 @@ public class TerminalCommandManager implements ICommandManager {
         ICommand command;
         String userInput = "";
         while (true) {
-            printEarningOrSpendingMenuOptions();
             boolean viewEarning = userWantsToViewEarning();
 
             printViewTransactionsMenuOptions();
