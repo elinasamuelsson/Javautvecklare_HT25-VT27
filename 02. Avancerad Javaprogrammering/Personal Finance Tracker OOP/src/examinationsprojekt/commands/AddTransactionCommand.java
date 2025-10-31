@@ -30,7 +30,7 @@ public class AddTransactionCommand implements ICommand {
         TransactionTypes type = returnType();
         LocalDateTime time = returnTime();
         String description = returnDescription();
-        double amount = 0;
+        double amount = 0; //validate amount is realistic
         if (isEarning) {
             amount = returnAmountEarned();
         } else {
