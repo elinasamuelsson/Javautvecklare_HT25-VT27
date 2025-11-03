@@ -324,5 +324,6 @@ public class ViewTransactionsCommand implements ICommand {
         System.out.println("Description: \t \t" + transaction.getDescription());
         System.out.println("ID: \t \t \t" + transaction.getId());
         System.out.println("-------------------------------------------");
+        System.out.println();
     }
 }

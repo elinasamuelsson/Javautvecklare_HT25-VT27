@@ -38,7 +38,11 @@ public class SelectAccountCommand implements ICommand {
         for (Account account : accounts) {
             if (userInput == (accounts.indexOf(account) + 1)) {
                 CurrentStateManager.setCurrentAccount(account);
+                System.out.println();
                 System.out.println(account.getName() + " selected.");
+            } else {
+                System.out.println();
+                System.out.println("Invalid option. Try again.");
             }
         }
     }

@@ -35,6 +35,7 @@ public class AddAccountCommand implements ICommand {
         if (!existingAccounts.isEmpty()) {
             for (Account existingAccount : existingAccounts) {
                 if (existingAccount.getName().equals(account.getName())) {
+                    System.out.println();
                     System.out.println("Account name already exists in another account.");
                     System.out.println("Restart account creation and try again.");
                     return;
@@ -43,6 +44,7 @@ public class AddAccountCommand implements ICommand {
         }
 
         repository.create(account);
+        System.out.println();
         System.out.println("Account successfully created.");
         System.out.println("Returning to menu.");
     }
@@ -60,11 +62,13 @@ public class AddAccountCommand implements ICommand {
             try {
                 if (userInput <= 0 || userInput > AccountTypes.values().length) {
                     System.out.println("Please enter a valid option.");
+                    System.out.println();
                 } else {
                     return AccountTypes.values()[(userInput - 1)];
                 }
             } catch (InputMismatchException exception) {
                 System.out.println("Option does not exist. Please enter a valid option.");
+                System.out.println();
             }
         }
     }
