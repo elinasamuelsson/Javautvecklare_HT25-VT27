@@ -5,11 +5,10 @@ import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
 import examinationsprojekt.models.TransactionTypes;
 import examinationsprojekt.models.ViewOptions;
-import examinationsprojekt.repository.FileRepository;
-import examinationsprojekt.repository.IRepository;
-import examinationsprojekt.repository.ListRepository;
-import examinationsprojekt.utils.IReadUserInput;
-import examinationsprojekt.utils.ReadUserTerminalInput;
+import examinationsprojekt.repositories.AccountFileRepository;
+import examinationsprojekt.repositories.IAccountRepository;
+import examinationsprojekt.utils.IUserInputReader;
+import examinationsprojekt.utils.UserTerminalInputReader;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +23,7 @@ public class ViewTransactionsCommand implements ICommand {
     private final ViewOptions option;
     private final boolean viewEarning;
 
-    IReadUserInput input = new ReadUserTerminalInput();
+    IUserInputReader input = new UserTerminalInputReader();
 
     public ViewTransactionsCommand(ViewOptions option, boolean viewEarning) {
         this.option = option;
@@ -32,10 +31,10 @@ public class ViewTransactionsCommand implements ICommand {
     }
 
     public void run() {
-        IRepository repository = new FileRepository();
+        IAccountRepository repository = new AccountFileRepository();
         Account accountToView = null;
 
-        List<Account> accounts = repository.read();
+        List<Account> accounts = repository.findAll();
         for (Account account : accounts) {
             if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                 accountToView = account;

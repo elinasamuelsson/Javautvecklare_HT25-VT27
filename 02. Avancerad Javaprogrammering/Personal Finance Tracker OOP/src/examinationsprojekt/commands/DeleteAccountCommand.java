@@ -2,24 +2,23 @@ package examinationsprojekt.commands;
 
 import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
-import examinationsprojekt.repository.FileRepository;
-import examinationsprojekt.repository.IRepository;
-import examinationsprojekt.repository.ListRepository;
-import examinationsprojekt.utils.IReadUserInput;
-import examinationsprojekt.utils.ReadUserTerminalInput;
+import examinationsprojekt.repositories.AccountFileRepository;
+import examinationsprojekt.repositories.IAccountRepository;
+import examinationsprojekt.utils.IUserInputReader;
+import examinationsprojekt.utils.UserTerminalInputReader;
 
 import java.util.List;
 
 public class DeleteAccountCommand implements ICommand {
-    private final IReadUserInput input = new ReadUserTerminalInput();
+    private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
-        IRepository repository = new FileRepository();
+        IAccountRepository repository = new AccountFileRepository();
 
         System.out.println("Which of the following accounts do you want to delete?");
         System.out.println();
 
-        List<Account> accounts = repository.read();
+        List<Account> accounts = repository.findAll();
 
         if (accounts.isEmpty()) {
             System.out.println("No accounts found.");

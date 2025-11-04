@@ -3,24 +3,23 @@ package examinationsprojekt.commands;
 import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
-import examinationsprojekt.repository.FileRepository;
-import examinationsprojekt.repository.IRepository;
-import examinationsprojekt.repository.ListRepository;
-import examinationsprojekt.utils.IReadUserInput;
-import examinationsprojekt.utils.ReadUserTerminalInput;
+import examinationsprojekt.repositories.AccountFileRepository;
+import examinationsprojekt.repositories.IAccountRepository;
+import examinationsprojekt.utils.IUserInputReader;
+import examinationsprojekt.utils.UserTerminalInputReader;
 
 public class DeleteTransactionCommand implements ICommand {
-    IReadUserInput input = new ReadUserTerminalInput();
+    IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
-        IRepository repository = new FileRepository();
+        IAccountRepository repository = new AccountFileRepository();
         Account accountToDeleteFrom = null;
 
         if (CurrentStateManager.getCurrentAccount() == null) {
             System.out.println("Select an account before deleting transactions.");
             return;
         } else {
-            for (Account account : repository.read()) {
+            for (Account account : repository.findAll()) {
                 if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                     accountToDeleteFrom = account;
                 }

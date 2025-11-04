@@ -1,22 +1,20 @@
 package examinationsprojekt.commands;
 
 import examinationsprojekt.models.*;
-import examinationsprojekt.repository.FileRepository;
-import examinationsprojekt.repository.IRepository;
-import examinationsprojekt.repository.ListRepository;
-import examinationsprojekt.utils.IReadUserInput;
-import examinationsprojekt.utils.ReadUserTerminalInput;
+import examinationsprojekt.repositories.AccountFileRepository;
+import examinationsprojekt.repositories.IAccountRepository;
+import examinationsprojekt.utils.IUserInputReader;
+import examinationsprojekt.utils.UserTerminalInputReader;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
 public class AddAccountCommand implements ICommand {
-    private final IReadUserInput input = new ReadUserTerminalInput();
+    private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
         Account account = null;
-        IRepository repository = new FileRepository();
+        IAccountRepository repository = new AccountFileRepository();
 
         AccountTypes type = returnAccountType();
         String name = returnAccountName();
@@ -30,12 +28,11 @@ public class AddAccountCommand implements ICommand {
             account = new SavingsAccount(name, owner, type, interest);
         }
 
-        List<Account> existingAccounts = repository.read();
+        List<Account> existingAccounts = repository.findAll();
 
         if (!existingAccounts.isEmpty()) {
             for (Account existingAccount : existingAccounts) {
                 if (existingAccount.getName().equals(account.getName())) {
-                    System.out.println();
                     System.out.println("Account name already exists in another account.");
                     System.out.println("Restart account creation and try again.");
                     return;
@@ -43,8 +40,7 @@ public class AddAccountCommand implements ICommand {
             }
         }
 
-        repository.create(account);
-        System.out.println();
+        repository.save(account);
         System.out.println("Account successfully created.");
         System.out.println("Returning to menu.");
     }
@@ -62,13 +58,11 @@ public class AddAccountCommand implements ICommand {
             try {
                 if (userInput <= 0 || userInput > AccountTypes.values().length) {
                     System.out.println("Please enter a valid option.");
-                    System.out.println();
                 } else {
                     return AccountTypes.values()[(userInput - 1)];
                 }
             } catch (InputMismatchException exception) {
                 System.out.println("Option does not exist. Please enter a valid option.");
-                System.out.println();
             }
         }
     }

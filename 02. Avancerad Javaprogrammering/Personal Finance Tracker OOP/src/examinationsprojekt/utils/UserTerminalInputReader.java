@@ -2,7 +2,7 @@ package examinationsprojekt.utils;
 
 import java.util.Scanner;
 
-public class ReadUserTerminalInput implements IReadUserInput {
+public class UserTerminalInputReader implements IUserInputReader {
     @Override
     public String stringInput() {
         System.out.print(" >");

@@ -1,24 +1,23 @@
-package examinationsprojekt.repository;
+package examinationsprojekt.repositories;
 
 import examinationsprojekt.models.*;
 
-import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListRepository implements IRepository {
+public class AccountListRepository implements IAccountRepository {
     private static final List<Account> accounts = new ArrayList<>();
 
-    /* UNCOMMENT FOR TEST ACCOUNTS AND TRANSACTIONS
+    /* UNCOMMENT FOR TEST ACCOUNTS AND TRANSACTIONS FROM ACCOUNTLISTREPOSITORY
     private static final List<Account> accounts = readyToImportTestAccountsAndTransactions();
     */
 
-    public boolean create(Account createdAccount) {
+    public boolean save(Account createdAccount) {
         return accounts.add(createdAccount);
     }
 
-    public List<Account> read() {
+    public List<Account> findAll() {
         return new ArrayList<>(accounts);
     }
 

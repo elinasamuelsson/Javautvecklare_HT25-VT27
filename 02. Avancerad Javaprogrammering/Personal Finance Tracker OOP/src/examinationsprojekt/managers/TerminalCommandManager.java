@@ -3,16 +3,15 @@ package examinationsprojekt.managers;
 import examinationsprojekt.commands.*;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.ViewOptions;
-import examinationsprojekt.repository.FileRepository;
-import examinationsprojekt.repository.IRepository;
-import examinationsprojekt.repository.ListRepository;
-import examinationsprojekt.utils.IReadUserInput;
-import examinationsprojekt.utils.ReadUserTerminalInput;
+import examinationsprojekt.repositories.AccountFileRepository;
+import examinationsprojekt.repositories.IAccountRepository;
+import examinationsprojekt.utils.IUserInputReader;
+import examinationsprojekt.utils.UserTerminalInputReader;
 
 import java.util.List;
 
 public class TerminalCommandManager implements ICommandManager {
-    IReadUserInput input = new ReadUserTerminalInput();
+    IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
         System.out.println("Welcome to the revised OOP version of the Personal Finance Tracker!");
@@ -26,7 +25,7 @@ public class TerminalCommandManager implements ICommandManager {
             if (command != null) {
                 command.run();
             } else if (userInput.equals("5")) { //move validation into viewTransactionsCommand
-                IRepository repository = new FileRepository();
+                IAccountRepository repository = new AccountFileRepository();
                 Account accountToView = null;
 
                 if (CurrentStateManager.getCurrentAccount() == null) {
@@ -34,7 +33,7 @@ public class TerminalCommandManager implements ICommandManager {
                     continue;
                 }
 
-                List<Account> accounts = repository.read();
+                List<Account> accounts = repository.findAll();
                 for (Account account : accounts) {
                     if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                         accountToView = account;

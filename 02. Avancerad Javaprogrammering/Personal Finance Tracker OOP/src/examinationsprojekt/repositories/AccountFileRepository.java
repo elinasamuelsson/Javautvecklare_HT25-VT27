@@ -1,5 +1,6 @@
-package examinationsprojekt.repository;
+package examinationsprojekt.repositories;
 
+import examinationsprojekt.commands.ViewAccountBalanceCommand;
 import examinationsprojekt.models.Account;
 
 import java.io.*;
@@ -7,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FileRepository implements IRepository {
+public class AccountFileRepository implements IAccountRepository {
     @Override
-    public boolean create(Account createdAccount) {
+    public boolean save(Account createdAccount) {
         try {
             File folder = new File("saveData");
             if (!folder.exists()) {
@@ -28,7 +29,7 @@ public class FileRepository implements IRepository {
         return true;
     }
 
-    public List<Account> read() {
+    public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
         try {
             File folder = new File("saveData");

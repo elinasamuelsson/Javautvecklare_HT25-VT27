@@ -3,27 +3,26 @@ package examinationsprojekt.commands;
 import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
-import examinationsprojekt.repository.FileRepository;
-import examinationsprojekt.repository.IRepository;
-import examinationsprojekt.repository.ListRepository;
-import examinationsprojekt.utils.IReadUserInput;
-import examinationsprojekt.utils.ReadUserTerminalInput;
+import examinationsprojekt.repositories.AccountFileRepository;
+import examinationsprojekt.repositories.IAccountRepository;
+import examinationsprojekt.utils.IUserInputReader;
+import examinationsprojekt.utils.UserTerminalInputReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchTransactionCommand implements ICommand {
-    IReadUserInput input = new ReadUserTerminalInput();
+    IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
-        IRepository repository = new FileRepository();
+        IAccountRepository repository = new AccountFileRepository();
         Account accountToSearchFrom = null;
 
         if (CurrentStateManager.getCurrentAccount() == null) {
             System.out.println("Select an account before searching transactions.");
             return;
         } else {
-            List<Account> accounts = repository.read();
+            List<Account> accounts = repository.findAll();
             for (Account account : accounts) {
                 if (account.getName().equals(CurrentStateManager.getCurrentAccount().getName())) {
                     accountToSearchFrom = account;

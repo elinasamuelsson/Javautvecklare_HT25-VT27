@@ -4,11 +4,10 @@ import examinationsprojekt.managers.CurrentStateManager;
 import examinationsprojekt.models.Account;
 import examinationsprojekt.models.Transaction;
 import examinationsprojekt.models.TransactionTypes;
-import examinationsprojekt.repository.FileRepository;
-import examinationsprojekt.repository.IRepository;
-import examinationsprojekt.repository.ListRepository;
-import examinationsprojekt.utils.IReadUserInput;
-import examinationsprojekt.utils.ReadUserTerminalInput;
+import examinationsprojekt.repositories.AccountFileRepository;
+import examinationsprojekt.repositories.IAccountRepository;
+import examinationsprojekt.utils.IUserInputReader;
+import examinationsprojekt.utils.UserTerminalInputReader;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +15,7 @@ import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 
 public class AddTransactionCommand implements ICommand {
-    private final IReadUserInput input = new ReadUserTerminalInput();
+    private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
         if (CurrentStateManager.getCurrentAccount() == null) {
@@ -24,7 +23,7 @@ public class AddTransactionCommand implements ICommand {
             return;
         }
         Account account = CurrentStateManager.getCurrentAccount();
-        IRepository repository = new FileRepository();
+        IAccountRepository repository = new AccountFileRepository();
 
         boolean isEarning = returnIsEarning();
         TransactionTypes type = returnType();
@@ -43,7 +42,7 @@ public class AddTransactionCommand implements ICommand {
         account.setBalance(amount);
 
         if (!repository.update(account)) {
-            repository.create(account);
+            repository.save(account);
             return;
         }
 
