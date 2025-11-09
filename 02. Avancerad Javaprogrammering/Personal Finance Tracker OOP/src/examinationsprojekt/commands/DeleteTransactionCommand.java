@@ -12,7 +12,8 @@ public class DeleteTransactionCommand implements ICommand {
     private final int index = 6;
     private final String description = "Delete transaction";
 
-    public DeleteTransactionCommand() {}
+    public DeleteTransactionCommand() {
+    }
 
     private final IUserInputReader input = new UserTerminalInputReader();
 
@@ -37,16 +38,20 @@ public class DeleteTransactionCommand implements ICommand {
             System.out.println("Enter the ID of the transaction you wish to delete.");
             userInput = input.stringInput();
 
+            boolean transactionFound = false;
+
             for (Transaction transaction : accountToDeleteFrom.getTransactionsCopy()) {
                 if (transaction.getId().equals(userInput)) {
                     accountToDeleteFrom.removeTransactionFromList(transaction);
-                } else {
-                    System.out.println("Transaction not found.");
-                    System.out.println("Restart transaction deletion and try again.");
-                    return;
+                    transactionFound = true;
                 }
             }
 
+            if (!transactionFound) {
+                System.out.println("No such transaction found.");
+                System.out.println("Restart transaction deletion and try again.");
+                return;
+            }
             repository.update(accountToDeleteFrom);
             System.out.println("Transaction has been deleted.");
             break;
