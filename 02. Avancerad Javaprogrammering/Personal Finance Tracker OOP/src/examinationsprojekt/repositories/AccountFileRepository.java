@@ -1,6 +1,5 @@
 package examinationsprojekt.repositories;
 
-import examinationsprojekt.commands.ViewAccountBalanceCommand;
 import examinationsprojekt.models.Account;
 
 import java.io.*;

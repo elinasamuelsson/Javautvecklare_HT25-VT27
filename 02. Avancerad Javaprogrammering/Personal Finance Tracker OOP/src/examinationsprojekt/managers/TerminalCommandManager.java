@@ -173,8 +173,7 @@ public class TerminalCommandManager implements ICommandManager {
         int userChoice = 0;
         try {
             userChoice = Integer.parseInt(userInput);
-        } catch (IndexOutOfBoundsException | NumberFormatException exception) {
-            System.out.println("Invalid option. Try again.");
+        } catch (IndexOutOfBoundsException | NumberFormatException _) {
         }
         List<Class<?>> commandClasses;
         ICommand command = null;
