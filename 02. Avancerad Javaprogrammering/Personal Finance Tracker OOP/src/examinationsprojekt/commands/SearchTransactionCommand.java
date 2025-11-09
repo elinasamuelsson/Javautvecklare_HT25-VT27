@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchTransactionCommand implements ICommand {
+    private final int index = 7;
+    private final String description = "Search transactions";
+
+    public SearchTransactionCommand() {}
+
     IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
@@ -40,7 +45,7 @@ public class SearchTransactionCommand implements ICommand {
                 if (transaction.getId().toLowerCase().contains(userInput) ||
                 transaction.getDescription().toLowerCase().contains(userInput) ||
                 transaction.getType().toString().toLowerCase().contains(userInput) ||
-                transaction.getTime().toString().toLowerCase().contains(userInput)) {
+                transaction.getLocalTime().toString().toLowerCase().contains(userInput)) {
                     searchResults.add(transaction);
                 }
             }
@@ -56,9 +61,9 @@ public class SearchTransactionCommand implements ICommand {
         } else {
             for (Transaction transaction : searchResults) {
                 System.out.println("-------------------------------------------");
-                System.out.print("Time: \t \t \t" + transaction.getTime().getDayOfMonth() + "-" +
-                        transaction.getTime().getMonthValue() + "-" + transaction.getTime().getYear() + ", ");
-                System.out.println(transaction.getTime().getHour() + ":" + transaction.getTime().getMinute());
+                System.out.print("Time: \t \t \t" + transaction.getLocalTime().getDayOfMonth() + "-" +
+                        transaction.getLocalTime().getMonthValue() + "-" + transaction.getLocalTime().getYear() + ", ");
+                System.out.println(transaction.getLocalTime().getHour() + ":" + transaction.getLocalTime().getMinute());
                 System.out.println("Amount: \t \t \t" + transaction.getAmount());
                 System.out.println("Type: \t \t \t" + transaction.getType().getTypeDescription());
                 System.out.println("Description: \t \t" + transaction.getDescription());

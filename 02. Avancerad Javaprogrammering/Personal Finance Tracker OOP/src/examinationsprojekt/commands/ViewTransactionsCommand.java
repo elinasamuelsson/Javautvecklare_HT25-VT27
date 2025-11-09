@@ -20,15 +20,20 @@ import java.util.InputMismatchException;
 import java.util.List;
 
 public class ViewTransactionsCommand implements ICommand {
-    private final ViewOptions option;
-    private final boolean viewEarning;
+    private final int index = 5;
+    private final String description = "View transactions";
+    private ViewOptions option;
+    private boolean viewEarning;
 
-    IUserInputReader input = new UserTerminalInputReader();
+    public ViewTransactionsCommand() {
+    }
 
     public ViewTransactionsCommand(ViewOptions option, boolean viewEarning) {
         this.option = option;
         this.viewEarning = viewEarning;
     }
+
+    private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
         IAccountRepository repository = new AccountFileRepository();
@@ -63,7 +68,7 @@ public class ViewTransactionsCommand implements ICommand {
             System.out.println("----------------" + dateToPrint + "----------------");
             System.out.println();
             for (Transaction transaction : transactions) {
-                if (transaction.getTime().getYear() == dateToPrint) {
+                if (transaction.getLocalTime().getYear() == dateToPrint) {
                     printTransaction(transaction);
                 }
             }
@@ -107,8 +112,8 @@ public class ViewTransactionsCommand implements ICommand {
                     dateToPrint.getYear() + "----------------");
             System.out.println();
             for (Transaction transaction : transactions) {
-                if (transaction.getTime().getMonthValue() == dateToPrint.getMonthValue()
-                        && transaction.getTime().getYear() == dateToPrint.getYear()) {
+                if (transaction.getLocalTime().getMonthValue() == dateToPrint.getMonthValue()
+                        && transaction.getLocalTime().getYear() == dateToPrint.getYear()) {
                     printTransaction(transaction);
                 }
             }
@@ -155,8 +160,8 @@ public class ViewTransactionsCommand implements ICommand {
                 .with(week.dayOfWeek(), 1);
 
         transactions.sort(
-                Comparator.comparingInt((Transaction transaction) -> transaction.getTime().get(week.weekBasedYear()))
-                        .thenComparing(transaction -> transaction.getTime().get(week.weekOfWeekBasedYear())));
+                Comparator.comparingInt((Transaction transaction) -> transaction.getLocalTime().get(week.weekBasedYear()))
+                        .thenComparing(transaction -> transaction.getLocalTime().get(week.weekOfWeekBasedYear())));
 
         String userInput = "";
         while (true) {
@@ -164,8 +169,8 @@ public class ViewTransactionsCommand implements ICommand {
                     dateToPrint.get(week.weekBasedYear()) + "----------------");
             System.out.println();
             for (Transaction transaction : transactions) {
-                if (transaction.getTime().get(week.weekBasedYear()) == dateToPrint.get(week.weekBasedYear())
-                        && transaction.getTime().get(week.weekOfWeekBasedYear()) == dateToPrint.get(week.weekOfWeekBasedYear())) {
+                if (transaction.getLocalTime().get(week.weekBasedYear()) == dateToPrint.get(week.weekBasedYear())
+                        && transaction.getLocalTime().get(week.weekOfWeekBasedYear()) == dateToPrint.get(week.weekOfWeekBasedYear())) {
                     printTransaction(transaction);
                 }
             }
@@ -220,8 +225,8 @@ public class ViewTransactionsCommand implements ICommand {
                     dateToPrint.getMonth() + " " + dateToPrint.getYear() + "----------------");
             System.out.println();
             for (Transaction transaction : transactions) {
-                if (transaction.getTime().getDayOfYear() == dateToPrint.getDayOfYear()
-                        && transaction.getTime().getYear() == dateToPrint.getYear()) {
+                if (transaction.getLocalTime().getDayOfYear() == dateToPrint.getDayOfYear()
+                        && transaction.getLocalTime().getYear() == dateToPrint.getYear()) {
                     printTransaction(transaction);
                 }
             }
@@ -306,18 +311,18 @@ public class ViewTransactionsCommand implements ICommand {
         }
 
         sortedTransactions.sort(
-                Comparator.comparingInt((Transaction transaction) -> transaction.getTime().getYear()).reversed()
-                        .thenComparing(transaction -> transaction.getTime().getMonthValue())
-                        .thenComparing(transaction -> transaction.getTime().getDayOfYear()));
+                Comparator.comparingInt((Transaction transaction) -> transaction.getLocalTime().getYear()).reversed()
+                        .thenComparing(transaction -> transaction.getLocalTime().getMonthValue())
+                        .thenComparing(transaction -> transaction.getLocalTime().getDayOfYear()));
 
         return sortedTransactions;
     }
 
     private void printTransaction(Transaction transaction) {
         System.out.println("-------------------------------------------");
-        System.out.print("Time: \t \t \t" + transaction.getTime().getDayOfMonth() + "-" +
-                transaction.getTime().getMonthValue() + "-" + transaction.getTime().getYear() + ", ");
-        System.out.println(transaction.getTime().getHour() + ":" + transaction.getTime().getMinute());
+        System.out.print("Time: \t \t \t" + transaction.getLocalTime().getDayOfMonth() + "-" +
+                transaction.getLocalTime().getMonthValue() + "-" + transaction.getLocalTime().getYear() + ", ");
+        System.out.println(transaction.getLocalTime().getHour() + ":" + transaction.getLocalTime().getMinute());
         System.out.println("Amount: \t \t \t" + transaction.getAmount());
         System.out.println("Type: \t \t \t" + transaction.getType().getTypeDescription());
         System.out.println("Description: \t \t" + transaction.getDescription());

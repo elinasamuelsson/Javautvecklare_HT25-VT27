@@ -8,10 +8,18 @@ import examinationsprojekt.repositories.IAccountRepository;
 import examinationsprojekt.utils.IUserInputReader;
 import examinationsprojekt.utils.UserTerminalInputReader;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TerminalCommandManager implements ICommandManager {
-    IUserInputReader input = new UserTerminalInputReader();
+    private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
         System.out.println("Welcome to the revised OOP version of the Personal Finance Tracker!");
@@ -22,7 +30,7 @@ public class TerminalCommandManager implements ICommandManager {
             String userInput = input.stringInput();
             ICommand command = getMainMenuCommand(userInput);
 
-            if (command != null) {
+            if (command != null && !userInput.equals("5")) {
                 command.run();
             } else if (userInput.equals("5")) { //move validation into viewTransactionsCommand
                 IAccountRepository repository = new AccountFileRepository();
@@ -75,33 +83,113 @@ public class TerminalCommandManager implements ICommandManager {
     }
 
     private void printMainMenuOptions() {
+        List<String> menuOptionsDescriptions = new ArrayList<>();
+        try {
+            menuOptionsDescriptions = findAllCommandClassDescriptions(findAllCommandClasses());
+        } catch (Exception e) {
+            System.out.println("Menu options not found.");
+        }
+
         System.out.println();
         System.out.println("-------------------------------------------");
         System.out.println("Please select an option from the following:");
-        System.out.println("\t1. Add account");
-        System.out.println("\t2. Select account");
-        System.out.println("\t3. Delete account");
-        System.out.println("\t4. Add transaction");
-        System.out.println("\t5. View transactions");
-        System.out.println("\t6. Delete transaction");
-        System.out.println("\t7. Search transactions");
-        System.out.println("\t8. View account balance");
+
+        int index = 1;
+        for (String description : menuOptionsDescriptions) {
+            System.out.println("\t" + index + ". " + description);
+            index++;
+        }
+
         System.out.println("\t0. Exit program");
         System.out.println("-------------------------------------------");
         System.out.println();
     }
 
+    private List<Class<?>> findAllCommandClasses() throws ClassNotFoundException, IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Enumeration<URL> resources = classLoader.getResources("examinationsprojekt/commands");
+
+        List<Class<?>> commandClasses = new ArrayList<>();
+
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            File dir = new File(URLDecoder.decode(resource.getFile(), "UTF-8"));
+
+            if (!dir.exists() || !dir.isDirectory()) {
+                System.err.println("Skipping non-directory resource: " + resource);
+                continue;
+            }
+
+            File[] files = dir.listFiles();
+            if (files == null) continue;
+
+            for (File file : files) {
+                if (file.getName().endsWith(".class") && !file.getName().contains("ICommand")) {
+                    String className = "examinationsprojekt.commands."
+                            + file.getName().substring(0, file.getName().length() - 6);
+                    commandClasses.add(Class.forName(className));
+                }
+            }
+        }
+
+        return commandClasses.stream()
+                .sorted((a, b) -> {
+                    try {
+                        Object objA = a.getDeclaredConstructor().newInstance();
+                        Object objB = b.getDeclaredConstructor().newInstance();
+                        Field fieldA = a.getDeclaredField("index");
+                        Field fieldB = b.getDeclaredField("index");
+                        fieldA.setAccessible(true);
+                        fieldB.setAccessible(true);
+                        int indexA = (int) fieldA.get(objA);
+                        int indexB = (int) fieldB.get(objB);
+                        return Integer.compare(indexA, indexB);
+                    } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException |
+                             InvocationTargetException | InstantiationException | NoSuchMethodException exception) {
+                        throw new RuntimeException(exception);
+                    }
+                })
+                .toList();
+    }
+
+    private List<String> findAllCommandClassDescriptions(List<Class<?>> commandClasses) {
+        List<String> commandClassesDescriptions = commandClasses.stream()
+                .map(a -> {
+                    try {
+                        Object object = a.getDeclaredConstructor().newInstance();
+                        Field description = a.getDeclaredField("description");
+                        description.setAccessible(true);
+                        return String.valueOf(description.get(object));
+                    } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException |
+                             InstantiationException | InvocationTargetException exception) {
+                        throw new RuntimeException(exception);
+                    }
+                })
+                .collect(Collectors.toList());
+        return commandClassesDescriptions;
+    }
+
     private ICommand getMainMenuCommand(String userInput) {
-        return switch (userInput) {
-            case "1" -> new AddAccountCommand();
-            case "2" -> new SelectAccountCommand();
-            case "3" -> new DeleteAccountCommand();
-            case "4" -> new AddTransactionCommand();
-            case "6" -> new DeleteTransactionCommand();
-            case "7" -> new SearchTransactionCommand();
-            case "8" -> new ViewAccountBalanceCommand();
-            default -> null;
-        };
+        int userChoice = 0;
+        try {
+            userChoice = Integer.parseInt(userInput);
+        } catch (IndexOutOfBoundsException | NumberFormatException exception) {
+            System.out.println("Invalid option. Try again.");
+        }
+        List<Class<?>> commandClasses;
+        ICommand command = null;
+        try {
+            commandClasses = findAllCommandClasses();
+        } catch (ClassNotFoundException | IOException exception) {
+            throw new RuntimeException(exception);
+        }
+
+        try {
+            return (ICommand) commandClasses.get(userChoice - 1).getDeclaredConstructor().newInstance();
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
+                 NoSuchMethodException | ArrayIndexOutOfBoundsException _) {
+        }
+        return command;
     }
 
     private void printEarningOrSpendingMenuOptions() {
@@ -137,11 +225,9 @@ public class TerminalCommandManager implements ICommandManager {
         System.out.println();
         System.out.println("-------------------------------------------");
         System.out.println("Please select an option from the following:");
-        System.out.println("\t1. Yearly");
-        System.out.println("\t2. Monthly");
-        System.out.println("\t3. Weekly");
-        System.out.println("\t4. Daily");
-        System.out.println("\t5. By category");
+        for (ViewOptions viewOption : ViewOptions.values()) {
+            System.out.println("\t" + viewOption.getIndex() + ". " + viewOption.getDescription());
+        }
         System.out.println("\t0. Return to earnings or spending");
         System.out.println("-------------------------------------------");
         System.out.println();

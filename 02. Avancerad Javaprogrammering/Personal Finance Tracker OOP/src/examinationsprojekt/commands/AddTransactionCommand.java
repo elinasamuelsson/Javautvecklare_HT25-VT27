@@ -9,12 +9,20 @@ import examinationsprojekt.repositories.IAccountRepository;
 import examinationsprojekt.utils.IUserInputReader;
 import examinationsprojekt.utils.UserTerminalInputReader;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 
 public class AddTransactionCommand implements ICommand {
+    private final int index = 4;
+    private final String description = "Add transaction";
+
+    public AddTransactionCommand() {
+    }
+
     private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
@@ -27,9 +35,9 @@ public class AddTransactionCommand implements ICommand {
 
         boolean isEarning = returnIsEarning();
         TransactionTypes type = returnType();
-        LocalDateTime time = returnTime();
+        Instant time = returnTime();
         String description = returnDescription();
-        double amount = 0; //validate amount is realistic
+        double amount = 0;
         if (isEarning) {
             amount = returnAmount();
         } else {
@@ -74,19 +82,21 @@ public class AddTransactionCommand implements ICommand {
         }
     }
 
-    private LocalDateTime returnTime() {
+    private Instant returnTime() {
         System.out.println("Enter date and time of the transaction.");
         System.out.println("Please use the format YYYY-MM-DD HH:MM");
 
-        LocalDateTime time;
+        LocalDateTime timeLDT;
+        Instant time;
         String userInput = "";
         while (true) {
             try {
                 userInput = input.stringInput();
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                time = LocalDateTime.parse(userInput, formatter);
+                timeLDT = LocalDateTime.parse(userInput, formatter);
 
+                time = timeLDT.toInstant(ZoneOffset.UTC);
                 return time;
             } catch (DateTimeParseException exception) {
                 System.out.println("Invalid date format. Try again.");
@@ -148,24 +158,6 @@ public class AddTransactionCommand implements ICommand {
                 }
             } catch (InputMismatchException | NumberFormatException exception) {
                 System.out.println("Please enter a valid number.");
-            }
-        }
-    }
-
-    private double returnAmountSpent() {
-        System.out.println("Enter transaction amount.");
-        double userInput = 0;
-        while (true) {
-            try {
-                userInput = Double.parseDouble(("-" + input.stringInput()));
-
-                if (userInput != 0) {
-                    return userInput;
-                } else {
-                    System.out.println("Amount must be greater than 0.");
-                }
-            } catch (InputMismatchException | NumberFormatException exception) {
-                System.out.println("Please enter a valid number greater than 0.");
             }
         }
     }

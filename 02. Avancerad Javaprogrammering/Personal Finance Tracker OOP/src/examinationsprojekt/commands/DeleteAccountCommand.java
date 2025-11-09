@@ -10,6 +10,11 @@ import examinationsprojekt.utils.UserTerminalInputReader;
 import java.util.List;
 
 public class DeleteAccountCommand implements ICommand {
+    private final int index = 3;
+    private final String description = "Delete account";
+
+    public DeleteAccountCommand() {}
+
     private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {

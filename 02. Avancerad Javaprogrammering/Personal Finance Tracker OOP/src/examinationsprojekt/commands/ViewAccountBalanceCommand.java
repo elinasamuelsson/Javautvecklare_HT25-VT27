@@ -8,6 +8,12 @@ import examinationsprojekt.repositories.IAccountRepository;
 import java.util.List;
 
 public class ViewAccountBalanceCommand implements ICommand {
+    private final int index = 8;
+    private final String description = "View account balance";
+
+    public ViewAccountBalanceCommand() {
+    }
+
     public void run() {
         IAccountRepository repository = new AccountFileRepository();
         Account accountToPrintBalanceFrom = null;

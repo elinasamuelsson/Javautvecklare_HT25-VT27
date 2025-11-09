@@ -9,7 +9,12 @@ import examinationsprojekt.utils.IUserInputReader;
 import examinationsprojekt.utils.UserTerminalInputReader;
 
 public class DeleteTransactionCommand implements ICommand {
-    IUserInputReader input = new UserTerminalInputReader();
+    private final int index = 6;
+    private final String description = "Delete transaction";
+
+    public DeleteTransactionCommand() {}
+
+    private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
         IAccountRepository repository = new AccountFileRepository();

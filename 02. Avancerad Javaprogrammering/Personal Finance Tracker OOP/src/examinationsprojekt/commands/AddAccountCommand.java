@@ -10,6 +10,12 @@ import java.util.InputMismatchException;
 import java.util.List;
 
 public class AddAccountCommand implements ICommand {
+    private final int index = 1;
+    private final String description = "Add account";
+
+    public AddAccountCommand() {
+    }
+
     private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {

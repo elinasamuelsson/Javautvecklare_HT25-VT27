@@ -10,6 +10,12 @@ import examinationsprojekt.utils.UserTerminalInputReader;
 import java.util.List;
 
 public class SelectAccountCommand implements ICommand {
+    private final int index = 2;
+    private final String description = "Select account";
+
+    public SelectAccountCommand() {
+    }
+
     private final IUserInputReader input = new UserTerminalInputReader();
 
     public void run() {
@@ -35,10 +41,15 @@ public class SelectAccountCommand implements ICommand {
         int userInput = input.intInput();
 
         for (Account account : accounts) {
+            if (userInput != (accounts.indexOf(account) + 1)) {
+                continue;
+            }
+
             if (userInput == (accounts.indexOf(account) + 1)) {
                 CurrentStateManager.setCurrentAccount(account);
                 System.out.println();
                 System.out.println(account.getName() + " selected.");
+                return;
             } else {
                 System.out.println();
                 System.out.println("Invalid option. Try again.");
